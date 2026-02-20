@@ -10,4 +10,10 @@ public abstract class DpContext : IdentityDbContext<AppUser, AppRole, Guid>
     public DbSet<Recipe> Recipes { get; set; } = null!;
     public DbSet<Instruction> Instructions { get; set; } = null!;
     public DbSet<Ingredient> Ingredients { get; set; } = null!;
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
+        builder.ApplyConfigurationsFromAssembly(typeof(DpContext).Assembly);
+    }
 }
