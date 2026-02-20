@@ -7,6 +7,8 @@ public sealed class SqlLiteContext : DpContext
 {
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
+        base.OnConfiguring(optionsBuilder);
+
         var path = Environment.ProcessPath + "/app.db";
         optionsBuilder.UseSqlite($"Data Source={path}");
     }
