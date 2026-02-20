@@ -11,6 +11,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\BL.Core\BL.Core.csproj" />
         <ProjectReference Include="..\DAL.Sqlite\DAL.Sqlite.csproj" />
     </ItemGroup>
 
