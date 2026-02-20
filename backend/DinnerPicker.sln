@@ -1,8 +1,37 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DAL", "DAL", "{B78ED573-655D-4599-8AAA-62A99DB04742}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DAL.SqlLite", "DAL.SqlLite\DAL.SqlLite.csproj", "{9525E99E-CD0F-44D2-8640-5925A50D53CA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{6FB6EDAB-683E-4CFA-AEE6-6C751F2BF292}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Identity", "Domain.Identity\Domain.Identity.csproj", "{1C3284A6-0ECE-4D9A-A878-ACFE47297060}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Recipes", "Domain.Recipes\Domain.Recipes.csproj", "{C26BD539-A311-416C-97A7-64BCD879B5BE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9525E99E-CD0F-44D2-8640-5925A50D53CA} = {B78ED573-655D-4599-8AAA-62A99DB04742}
+		{1C3284A6-0ECE-4D9A-A878-ACFE47297060} = {6FB6EDAB-683E-4CFA-AEE6-6C751F2BF292}
+		{C26BD539-A311-416C-97A7-64BCD879B5BE} = {6FB6EDAB-683E-4CFA-AEE6-6C751F2BF292}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9525E99E-CD0F-44D2-8640-5925A50D53CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9525E99E-CD0F-44D2-8640-5925A50D53CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9525E99E-CD0F-44D2-8640-5925A50D53CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9525E99E-CD0F-44D2-8640-5925A50D53CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C3284A6-0ECE-4D9A-A878-ACFE47297060}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C3284A6-0ECE-4D9A-A878-ACFE47297060}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C3284A6-0ECE-4D9A-A878-ACFE47297060}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C3284A6-0ECE-4D9A-A878-ACFE47297060}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C26BD539-A311-416C-97A7-64BCD879B5BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C26BD539-A311-416C-97A7-64BCD879B5BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C26BD539-A311-416C-97A7-64BCD879B5BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C26BD539-A311-416C-97A7-64BCD879B5BE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
