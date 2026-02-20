@@ -1,4 +1,5 @@
 using Domain.Core;
+using Domain.Identity;
 
 namespace Domain.Recipes;
 
@@ -23,6 +24,8 @@ public class Recipe : Entity
     /// Time in minutes to cook/prep
     /// </summary>
     public int CookTimeMinutes { get; set; }
+    
+    public AppUser? Creator { get; set; }
     
     public ICollection<Instruction> Instructions { get; set; } = new List<Instruction>();
 }
