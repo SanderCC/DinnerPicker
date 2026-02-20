@@ -1,14 +1,14 @@
 using DAL.Core.EF;
 using Microsoft.EntityFrameworkCore;
 
-namespace DAL.SqlServer.Local;
+namespace DAL.Sqlite;
 
-public sealed class SqlServerLocalContext : DpContext
+public sealed class SqliteContext : DpContext
 {
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         base.OnConfiguring(optionsBuilder);
 
-        optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=dp;Trusted_Connection=True;");
+        optionsBuilder.UseSqlite("Data Source=../dinnerpicker.db");
     }
 }

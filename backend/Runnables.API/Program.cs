@@ -1,11 +1,11 @@
 using DAL.Core.EF;
-using DAL.SqlServer.Local;
+using DAL.Sqlite;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
-builder.Services.AddDbContext<DpContext, SqlServerLocalContext>();
+builder.Services.AddDbContext<DpContext, SqliteContext>();
 
 var app = builder.Build();
 
