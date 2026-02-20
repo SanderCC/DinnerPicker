@@ -1,15 +1,14 @@
 using DAL.Core.EF;
 using Microsoft.EntityFrameworkCore;
 
-namespace DAL.SqlLite;
+namespace DAL.SqlServerLocal;
 
-public sealed class SqlLiteContext : DpContext
+public sealed class SqlServerLocalContext : DpContext
 {
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         base.OnConfiguring(optionsBuilder);
 
-        var path = Environment.ProcessPath + "/app.db";
-        optionsBuilder.UseSqlite($"Data Source={path}");
+        optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=dp;Trusted_Connection=True;");
     }
 }
