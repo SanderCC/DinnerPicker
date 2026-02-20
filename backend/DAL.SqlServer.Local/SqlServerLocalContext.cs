@@ -1,7 +1,7 @@
 using DAL.Core.EF;
 using Microsoft.EntityFrameworkCore;
 
-namespace DAL.SqlServerLocal;
+namespace DAL.SqlServer.Local;
 
 public sealed class SqlServerLocalContext : DpContext
 {
