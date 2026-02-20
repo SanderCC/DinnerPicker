@@ -1,0 +1,6 @@
+@Runnables.API_HostAddress = http://localhost:5083
+
+GET {{Runnables.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
