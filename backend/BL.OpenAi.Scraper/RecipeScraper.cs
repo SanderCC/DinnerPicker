@@ -67,6 +67,7 @@ public sealed class RecipeScraper(OpenAiSecrets secrets)
     private async Task<Recipe?> ExtractRecipeAsync(string text, string url)
     {
         var prompt = """
+                     Only return correct data, never with examples.
                      Extract the recipe from the following text into a JSON format.
                      The JSON should match this structure:
                      {
@@ -78,11 +79,16 @@ public sealed class RecipeScraper(OpenAiSecrets secrets)
                          { "Name": "Ingredient Name", "Amount": 100, "Unit": "Gram" }
                        ],
                        "Instructions": [
-                         { "Order": 1, "Description": "Step 1" }
+                         { 
+                           "Order": 1, 
+                           "Description": "Step 1", 
+                           "Ingredient": { "Name": "Ingredient Name", "Amount": 100, "Unit": "Gram" } 
+                         }
                        ]
                      }
                      Valid Units are: Gram, Milliliter, Piece. If you can't map a unit, use Piece and adjust amount.
-
+                     The Ingredients list at the root should contain all ingredients required for the recipe.
+                     The Ingredient within an Instruction should be the specific ingredient used in that step, if applicable.
                      Text:
 
                      """ + (text.Length > 4000 ? text[..4000] : text);
@@ -116,18 +122,16 @@ public sealed class RecipeScraper(OpenAiSecrets secrets)
                 ImageUrl = extracted.ImageUrl,
                 Servings = extracted.Servings,
                 CookTimeMinutes = extracted.CookTimeMinutes,
-                Instructions = extracted.Instructions.Select(i => new Instruction
-                {
-                    Order = i.Order,
-                    Description = i.Description,
-                    Recipe = null! // This would be set when saving, but the property is required. 
-                    // In a real scenario, we might need to adjust the Domain model or handle this better.
-                }).ToList()
+                Ingredients = extracted.Ingredients.Select(MapIngredient).ToList()
             };
 
-            // Ingredients are currently not a direct property of Recipe in the provided file, 
-            // but they are mentioned in Instruction. However, Ingredient itself is an Entity.
-            // Let's assume for now we just want to populate the Recipe object as much as possible.
+            recipe.Instructions = extracted.Instructions.Select(i => new Instruction
+            {
+                Order = i.Order,
+                Description = i.Description,
+                Recipe = recipe,
+                Ingredient = i.Ingredient != null ? MapIngredient(i.Ingredient) : null
+            }).ToList();
 
             return recipe;
         }
@@ -136,6 +140,16 @@ public sealed class RecipeScraper(OpenAiSecrets secrets)
             Console.WriteLine($"Error parsing JSON: {ex.Message}");
             return null;
         }
+    }
+
+    private static Ingredient MapIngredient(ExtractedIngredient i)
+    {
+        return new Ingredient
+        {
+            Name = i.Name,
+            Amount = i.Amount,
+            Unit = Enum.TryParse<Unit>(i.Unit, true, out var unit) ? unit : Unit.Piece
+        };
     }
 
     private class ExtractedRecipe
@@ -159,5 +173,6 @@ public sealed class RecipeScraper(OpenAiSecrets secrets)
     {
         public int Order { get; set; }
         public string Description { get; set; } = string.Empty;
+        public ExtractedIngredient? Ingredient { get; set; } = null;
     }
 }

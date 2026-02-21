@@ -33,4 +33,5 @@ public class Recipe : Entity
     public AppUser? Creator { get; set; }
 
     public ICollection<Instruction> Instructions { get; set; } = new List<Instruction>();
+    public ICollection<Ingredient> Ingredients { get; set; } = new List<Ingredient>();
 }
