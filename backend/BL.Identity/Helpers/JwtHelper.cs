@@ -1,14 +1,12 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using BL.Core.Attributes;
 using Domain.Identity;
 using Microsoft.IdentityModel.Tokens;
 using JwtConstants = BL.Identity.Constants.JwtConstants;
 
 namespace BL.Identity.Helpers;
 
-[Service]
-internal sealed class JwtHelper
+internal static class JwtHelper
 {
     public static string CreateToken(AppUser user, string[] roles)
     {
