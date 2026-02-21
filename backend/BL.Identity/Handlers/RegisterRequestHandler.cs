@@ -11,6 +11,8 @@ public class RegisterRequestHandler(UserManager<AppUser> userManager)
     {
         var user = new AppUser
         {
+            FirstName = request.FirstName,
+            LastName = request.LastName,
             UserName = request.Email,
             Email = request.Email,
             NormalizedEmail = request.Email.ToUpperInvariant(),
@@ -23,5 +25,5 @@ public class RegisterRequestHandler(UserManager<AppUser> userManager)
         return result;
     }
 
-    public record RegisterRequest(string Email, string Password);
+    public record RegisterRequest(string Email, string Password, string FirstName, string LastName);
 }

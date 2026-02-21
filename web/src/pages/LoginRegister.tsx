@@ -21,6 +21,8 @@ import {postObjectWithResponse} from "../functions/objectService";
 const LoginRegister = () => {
     const [index, setIndex] = useState(0);
     const [email, setEmail] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const {login} = useAuth();
@@ -55,7 +57,7 @@ const LoginRegister = () => {
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!email || !password || !confirmPassword) {
+        if (!email || !password || !confirmPassword || !firstName || !lastName) {
             enqueueSnackbar('Please fill in all fields', {variant: 'error'});
             return;
         }
@@ -66,16 +68,23 @@ const LoginRegister = () => {
         }
 
         try {
-            const response = await postObjectWithResponse<{ email: string, password: string }, {
+            const response = await postObjectWithResponse<{
+                email: string,
+                password: string,
+                firstName: string,
+                lastName: string
+            }, {
                 succeeded: boolean,
                 errors: { code: string, description: string }[]
-            }>('/Identity/Register', {email, password});
+            }>('/Identity/Register', {email, password, firstName, lastName});
 
             if (response.data.succeeded) {
                 enqueueSnackbar('Registered successfully! You can now login.', {variant: 'success'});
                 setIndex(0);
                 setPassword('');
                 setConfirmPassword('');
+                setFirstName('');
+                setLastName('');
             } else {
                 response.data.errors.forEach(err => enqueueSnackbar(err.description, {variant: 'error'}));
             }
@@ -162,6 +171,24 @@ const LoginRegister = () => {
                         ) : (
                             <form onSubmit={handleRegister}>
                                 <Stack spacing={2}>
+                                    <FormControl required>
+                                        <FormLabel>First Name</FormLabel>
+                                        <Input
+                                            type="text"
+                                            value={firstName}
+                                            onChange={(e) => setFirstName(e.target.value)}
+                                            placeholder="John"
+                                        />
+                                    </FormControl>
+                                    <FormControl required>
+                                        <FormLabel>Last Name</FormLabel>
+                                        <Input
+                                            type="text"
+                                            value={lastName}
+                                            onChange={(e) => setLastName(e.target.value)}
+                                            placeholder="Doe"
+                                        />
+                                    </FormControl>
                                     <FormControl required>
                                         <FormLabel>Email</FormLabel>
                                         <Input
