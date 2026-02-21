@@ -13,6 +13,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Domain.Identity\Domain.Identity.csproj" />
+        <ProjectReference Include="..\Domain.Picker\Domain.Picker.csproj"/>
       <ProjectReference Include="..\Domain.Recipes\Domain.Recipes.csproj" />
     </ItemGroup>
 

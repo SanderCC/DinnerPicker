@@ -7,6 +7,8 @@ public sealed class PickerSession : Entity
 {
     public required PickerSessionState State { get; set; } = PickerSessionState.Draft;
 
-    public required DateTimeOffset Expiry { get; set; } = DateTimeOffset.UtcNow.AddDays(1);
-    public required AppUser Creator { get; set; }
+    public required DateTimeOffset Expiry { get; init; } = DateTimeOffset.UtcNow.AddDays(1);
+    public required AppUser Creator { get; init; }
+
+    public ICollection<PickerUserSession> Users { get; set; } = new List<PickerUserSession>();
 }
