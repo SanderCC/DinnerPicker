@@ -71,6 +71,7 @@ public sealed class RecipeScraper
                      The JSON should match this structure:
                      {
                        "Name": "Recipe Name",
+                       "ImageUrl": "https://example.com/image.jpg",
                        "Servings": 4,
                        "CookTimeMinutes": 30,
                        "Ingredients": [
@@ -112,6 +113,7 @@ public sealed class RecipeScraper
             {
                 Name = extracted.Name,
                 Reference = url,
+                ImageUrl = extracted.ImageUrl,
                 Servings = extracted.Servings,
                 CookTimeMinutes = extracted.CookTimeMinutes,
                 Instructions = extracted.Instructions.Select(i => new Instruction
@@ -139,6 +141,7 @@ public sealed class RecipeScraper
     private class ExtractedRecipe
     {
         public string Name { get; set; } = string.Empty;
+        public string ImageUrl { get; set; } = string.Empty;
         public int Servings { get; set; }
         public int CookTimeMinutes { get; set; }
         public List<ExtractedIngredient> Ingredients { get; set; } = [];
