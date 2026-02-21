@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import {useState} from 'react';
 import {AspectRatio, Box, Button, Card, Container, IconButton, Stack, Typography} from '@mui/joy';
 import CloseIcon from '@mui/icons-material/Close';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -36,13 +36,28 @@ const SwipeSession = () => {
 
     if (matched) {
         return (
-            <Container maxWidth="sm" sx={{py: 8, textAlign: 'center'}}>
-                <Typography level="h1" color="primary" sx={{mb: 2}}>It's a Match!</Typography>
-                <Typography level="h4" sx={{mb: 4}}>Everyone in the group wants {recipes[0].title}!</Typography>
-                <AspectRatio ratio="4/3" sx={{borderRadius: 'md', mb: 4}}>
-                    <img src={recipes[0].image} alt="matched meal"/>
-                </AspectRatio>
-                <Button size="lg" onClick={() => setMatched(false)}>Continue Swiping</Button>
+            <Container
+                maxWidth="sm"
+                sx={{
+                    py: {xs: 4, sm: 8},
+                    textAlign: 'center',
+                    height: '100dvh',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    overflow: 'hidden'
+                }}
+            >
+                <Typography level="h1" color="primary" sx={{mb: 2, flexShrink: 0}}>It's a Match!</Typography>
+                <Typography level="h4" sx={{mb: 4, flexShrink: 0}}>Everyone in the group
+                    wants {recipes[0].title}!</Typography>
+                <Box sx={{width: '100%', maxWidth: 400, flexShrink: 1, minHeight: 0, mb: 4}}>
+                    <AspectRatio ratio="4/3" sx={{borderRadius: 'md', height: '100%'}}>
+                        <img src={recipes[0].image} alt="matched meal" style={{objectFit: 'cover'}}/>
+                    </AspectRatio>
+                </Box>
+                <Button size="lg" onClick={() => setMatched(false)} sx={{flexShrink: 0}}>Continue Swiping</Button>
             </Container>
         );
     }
@@ -50,8 +65,17 @@ const SwipeSession = () => {
     const currentRecipe = recipes[currentIndex];
 
     return (
-        <Container maxWidth="sm" sx={{py: 4, height: 'calc(100vh - 120px)', display: 'flex', flexDirection: 'column'}}>
-            <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2}}>
+        <Container
+            maxWidth="sm"
+            sx={{
+                py: {xs: 2, sm: 4},
+                height: '90dvh',
+                display: 'flex',
+                flexDirection: 'column',
+                overflow: 'hidden'
+            }}
+        >
+            <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, flexShrink: 0}}>
                 <Typography level="h2">Dinner Picker</Typography>
                 <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
                     <PeopleIcon color="primary"/>
@@ -59,23 +83,33 @@ const SwipeSession = () => {
                 </Box>
             </Box>
 
-            <Box sx={{flexGrow: 1, position: 'relative', mb: 4}}>
+            <Box
+                sx={{flexGrow: 1, position: 'relative', mb: 2, minHeight: 0, display: 'flex', flexDirection: 'column'}}>
                 <Card
                     variant="outlined"
                     sx={{
-                        height: '100%',
+                        flexGrow: 1,
                         display: 'flex',
                         flexDirection: 'column',
                         p: 0,
                         overflow: 'hidden',
                         boxShadow: 'xl',
+                        minHeight: 0
                     }}
                 >
-                    <AspectRatio ratio="3/4" sx={{flexGrow: 1}}>
-                        <img src={currentRecipe.image} alt={currentRecipe.title}/>
+                    <AspectRatio ratio="3/4" sx={{flexGrow: 1, minHeight: 0}}>
+                        <img
+                            src={currentRecipe.image}
+                            alt={currentRecipe.title}
+                            style={{
+                                width: '100%',
+                                height: '100%',
+                                objectFit: 'cover'
+                            }}
+                        />
                     </AspectRatio>
-                    <Box sx={{p: 3, bgcolor: 'background.surface'}}>
-                        <Typography level="h3">{currentRecipe.title}</Typography>
+                    <Box sx={{p: {xs: 2, sm: 3}, bgcolor: 'background.surface', flexShrink: 0}}>
+                        <Typography level="h3" noWrap>{currentRecipe.title}</Typography>
                         <Typography level="body-md" sx={{color: 'text.secondary'}}>
                             Swipe right if you like it, left if you don't.
                         </Typography>
@@ -83,7 +117,7 @@ const SwipeSession = () => {
                 </Card>
             </Box>
 
-            <Stack direction="row" spacing={4} justifyContent="center" sx={{pb: 4}}>
+            <Stack direction="row" spacing={4} justifyContent="center" sx={{pb: {xs: 2, sm: 4}, flexShrink: 0}}>
                 <IconButton
                     size="lg"
                     variant="solid"
