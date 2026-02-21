@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Runnables.API.Controllers;
+namespace Runnable.API.Controllers;
 
 [Controller, AllowAnonymous, Route("/[controller]/[action]")]
 public class IdentityController : ControllerBase
