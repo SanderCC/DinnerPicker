@@ -59,7 +59,7 @@ public class LoginRequestHandler(SignInManager<AppUser> signInManager)
 
     public record LoginResponse
     {
-        public bool Success => Errors.Length > 0;
+        public bool Success => Errors.Length == 0;
         public required string Token { get; init; }
         public required string[] Errors { get; init; }
     }
