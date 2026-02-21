@@ -41,7 +41,7 @@ const SwipeSession = () => {
                 sx={{
                     py: {xs: 4, sm: 8},
                     textAlign: 'center',
-                    height: '100dvh',
+                    height: '70dvh',
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'center',
