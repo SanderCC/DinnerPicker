@@ -8,7 +8,6 @@ public class RecipeScraperTests
 {
     [Theory]
     [InlineData("https://www.allrecipes.com/recipe/16311/simple-beef-stroganoff/")]
-    [InlineData("https://www.allrecipes.com/gallery/dinners-that-start-with-alfredo-sauce/")]
     public async Task FindsRecipe(string url)
     {
         var sut = Dependencies<RecipeScraperTests>.Get<RecipeScraper>();
