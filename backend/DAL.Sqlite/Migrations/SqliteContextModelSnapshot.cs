@@ -47,7 +47,7 @@ namespace DAL.Sqlite.Migrations
                         new
                         {
                             Id = new Guid("9f53f7f2-8735-452c-b271-98a3dce48b12"),
-                            ConcurrencyStamp = "aef12d01-419b-4793-a503-197c09e58714",
+                            ConcurrencyStamp = "1297d28f-b3c3-45af-a64d-b214b76f6d4c",
                             Name = "Admin"
                         });
                 });
@@ -71,6 +71,14 @@ namespace DAL.Sqlite.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("INTEGER");
@@ -117,6 +125,55 @@ namespace DAL.Sqlite.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Picker.PickerSession", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("CreatorId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTimeOffset>("Expiry")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("State")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorId");
+
+                    b.ToTable("PickerSessions");
+                });
+
+            modelBuilder.Entity("Domain.Picker.PickerUserSession", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("PickerSessionId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PickerSessionId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("PickerUserSessions");
+                });
+
             modelBuilder.Entity("Domain.Recipes.Ingredient", b =>
                 {
                     b.Property<Guid>("Id")
@@ -126,17 +183,22 @@ namespace DAL.Sqlite.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTimeOffset>("CreatedOn")
+                    b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<Guid?>("RecipeId")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("Unit")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("RecipeId");
 
                     b.ToTable("Ingredients");
                 });
@@ -147,7 +209,7 @@ namespace DAL.Sqlite.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTimeOffset>("CreatedOn")
+                    b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Description")
@@ -181,10 +243,14 @@ namespace DAL.Sqlite.Migrations
                     b.Property<int>("CookTimeMinutes")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTimeOffset>("CreatedOn")
+                    b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("TEXT");
 
                     b.Property<Guid?>("CreatorId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
@@ -303,6 +369,37 @@ namespace DAL.Sqlite.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Picker.PickerSession", b =>
+                {
+                    b.HasOne("Domain.Identity.AppUser", "Creator")
+                        .WithMany()
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Creator");
+                });
+
+            modelBuilder.Entity("Domain.Picker.PickerUserSession", b =>
+                {
+                    b.HasOne("Domain.Picker.PickerSession", null)
+                        .WithMany("Users")
+                        .HasForeignKey("PickerSessionId");
+
+                    b.HasOne("Domain.Identity.AppUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Domain.Recipes.Ingredient", b =>
+                {
+                    b.HasOne("Domain.Recipes.Recipe", null)
+                        .WithMany("Ingredients")
+                        .HasForeignKey("RecipeId");
+                });
+
             modelBuilder.Entity("Domain.Recipes.Instruction", b =>
                 {
                     b.HasOne("Domain.Recipes.Ingredient", "Ingredient")
@@ -380,8 +477,15 @@ namespace DAL.Sqlite.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Domain.Picker.PickerSession", b =>
+                {
+                    b.Navigation("Users");
+                });
+
             modelBuilder.Entity("Domain.Recipes.Recipe", b =>
                 {
+                    b.Navigation("Ingredients");
+
                     b.Navigation("Instructions");
                 });
 #pragma warning restore 612, 618

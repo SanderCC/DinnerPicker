@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Sqlite.Migrations
 {
     [DbContext(typeof(SqliteContext))]
-    [Migration("20260220221732_Setup")]
-    partial class Setup
+    [Migration("20260221151628_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -45,6 +45,14 @@ namespace DAL.Sqlite.Migrations
                         .HasDatabaseName("RoleNameIndex");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("9f53f7f2-8735-452c-b271-98a3dce48b12"),
+                            ConcurrencyStamp = "1297d28f-b3c3-45af-a64d-b214b76f6d4c",
+                            Name = "Admin"
+                        });
                 });
 
             modelBuilder.Entity("Domain.Identity.AppUser", b =>
@@ -66,6 +74,14 @@ namespace DAL.Sqlite.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("INTEGER");
@@ -112,17 +128,98 @@ namespace DAL.Sqlite.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Picker.PickerSession", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("CreatorId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTimeOffset>("Expiry")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("State")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorId");
+
+                    b.ToTable("PickerSessions");
+                });
+
+            modelBuilder.Entity("Domain.Picker.PickerUserSession", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("PickerSessionId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PickerSessionId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("PickerUserSessions");
+                });
+
+            modelBuilder.Entity("Domain.Recipes.Ingredient", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("RecipeId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Unit")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RecipeId");
+
+                    b.ToTable("Ingredients");
+                });
+
             modelBuilder.Entity("Domain.Recipes.Instruction", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTimeOffset>("CreatedOn")
+                    b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Description")
                         .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("IngredientId")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Order")
@@ -132,6 +229,8 @@ namespace DAL.Sqlite.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("IngredientId");
 
                     b.HasIndex("RecipeId");
 
@@ -144,14 +243,32 @@ namespace DAL.Sqlite.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTimeOffset>("CreatedOn")
+                    b.Property<int>("CookTimeMinutes")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("CreatorId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Reference")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Servings")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("CreatorId");
 
                     b.ToTable("Recipes");
                 });
@@ -255,15 +372,61 @@ namespace DAL.Sqlite.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Picker.PickerSession", b =>
+                {
+                    b.HasOne("Domain.Identity.AppUser", "Creator")
+                        .WithMany()
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Creator");
+                });
+
+            modelBuilder.Entity("Domain.Picker.PickerUserSession", b =>
+                {
+                    b.HasOne("Domain.Picker.PickerSession", null)
+                        .WithMany("Users")
+                        .HasForeignKey("PickerSessionId");
+
+                    b.HasOne("Domain.Identity.AppUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Domain.Recipes.Ingredient", b =>
+                {
+                    b.HasOne("Domain.Recipes.Recipe", null)
+                        .WithMany("Ingredients")
+                        .HasForeignKey("RecipeId");
+                });
+
             modelBuilder.Entity("Domain.Recipes.Instruction", b =>
                 {
+                    b.HasOne("Domain.Recipes.Ingredient", "Ingredient")
+                        .WithMany()
+                        .HasForeignKey("IngredientId");
+
                     b.HasOne("Domain.Recipes.Recipe", "Recipe")
                         .WithMany("Instructions")
                         .HasForeignKey("RecipeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Ingredient");
+
                     b.Navigation("Recipe");
+                });
+
+            modelBuilder.Entity("Domain.Recipes.Recipe", b =>
+                {
+                    b.HasOne("Domain.Identity.AppUser", "Creator")
+                        .WithMany()
+                        .HasForeignKey("CreatorId");
+
+                    b.Navigation("Creator");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -317,8 +480,15 @@ namespace DAL.Sqlite.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Domain.Picker.PickerSession", b =>
+                {
+                    b.Navigation("Users");
+                });
+
             modelBuilder.Entity("Domain.Recipes.Recipe", b =>
                 {
+                    b.Navigation("Ingredients");
+
                     b.Navigation("Instructions");
                 });
 #pragma warning restore 612, 618

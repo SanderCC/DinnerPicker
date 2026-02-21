@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace DAL.Sqlite.Migrations
 {
     /// <inheritdoc />
-    public partial class Setup : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -30,6 +30,8 @@ namespace DAL.Sqlite.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    FirstName = table.Column<string>(type: "TEXT", nullable: false),
+                    LastName = table.Column<string>(type: "TEXT", nullable: false),
                     UserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
@@ -48,19 +50,6 @@ namespace DAL.Sqlite.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Recipes",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    CreatedOn = table.Column<DateTimeOffset>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Recipes", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -170,18 +159,113 @@ namespace DAL.Sqlite.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PickerSessions",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    State = table.Column<int>(type: "INTEGER", nullable: false),
+                    Expiry = table.Column<DateTimeOffset>(type: "TEXT", nullable: false),
+                    CreatorId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PickerSessions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PickerSessions_AspNetUsers_CreatorId",
+                        column: x => x.CreatorId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Recipes",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    Reference = table.Column<string>(type: "TEXT", nullable: true),
+                    ImageUrl = table.Column<string>(type: "TEXT", nullable: false),
+                    Servings = table.Column<int>(type: "INTEGER", nullable: false),
+                    CookTimeMinutes = table.Column<int>(type: "INTEGER", nullable: false),
+                    CreatorId = table.Column<Guid>(type: "TEXT", nullable: true),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Recipes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Recipes_AspNetUsers_CreatorId",
+                        column: x => x.CreatorId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PickerUserSessions",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    UserId = table.Column<Guid>(type: "TEXT", nullable: true),
+                    PickerSessionId = table.Column<Guid>(type: "TEXT", nullable: true),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PickerUserSessions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PickerUserSessions_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_PickerUserSessions_PickerSessions_PickerSessionId",
+                        column: x => x.PickerSessionId,
+                        principalTable: "PickerSessions",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Ingredients",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    Amount = table.Column<decimal>(type: "TEXT", nullable: false),
+                    Unit = table.Column<int>(type: "INTEGER", nullable: false),
+                    RecipeId = table.Column<Guid>(type: "TEXT", nullable: true),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Ingredients", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Ingredients_Recipes_RecipeId",
+                        column: x => x.RecipeId,
+                        principalTable: "Recipes",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Instructions",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     RecipeId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    IngredientId = table.Column<Guid>(type: "TEXT", nullable: true),
                     Order = table.Column<int>(type: "INTEGER", nullable: false),
                     Description = table.Column<string>(type: "TEXT", nullable: false),
-                    CreatedOn = table.Column<DateTimeOffset>(type: "TEXT", nullable: false)
+                    CreatedAt = table.Column<DateTimeOffset>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Instructions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Instructions_Ingredients_IngredientId",
+                        column: x => x.IngredientId,
+                        principalTable: "Ingredients",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Instructions_Recipes_RecipeId",
                         column: x => x.RecipeId,
@@ -189,6 +273,11 @@ namespace DAL.Sqlite.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[] { new Guid("9f53f7f2-8735-452c-b271-98a3dce48b12"), "1297d28f-b3c3-45af-a64d-b214b76f6d4c", "Admin", null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -228,9 +317,39 @@ namespace DAL.Sqlite.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Ingredients_RecipeId",
+                table: "Ingredients",
+                column: "RecipeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Instructions_IngredientId",
+                table: "Instructions",
+                column: "IngredientId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Instructions_RecipeId",
                 table: "Instructions",
                 column: "RecipeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PickerSessions_CreatorId",
+                table: "PickerSessions",
+                column: "CreatorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PickerUserSessions_PickerSessionId",
+                table: "PickerUserSessions",
+                column: "PickerSessionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PickerUserSessions_UserId",
+                table: "PickerUserSessions",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Recipes_CreatorId",
+                table: "Recipes",
+                column: "CreatorId");
         }
 
         /// <inheritdoc />
@@ -255,13 +374,22 @@ namespace DAL.Sqlite.Migrations
                 name: "Instructions");
 
             migrationBuilder.DropTable(
+                name: "PickerUserSessions");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Ingredients");
+
+            migrationBuilder.DropTable(
+                name: "PickerSessions");
 
             migrationBuilder.DropTable(
                 name: "Recipes");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
         }
     }
 }
