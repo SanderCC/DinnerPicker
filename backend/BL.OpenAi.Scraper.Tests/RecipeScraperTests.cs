@@ -17,5 +17,8 @@ public class RecipeScraperTests
 
         // Check if some instructions have ingredients mapped
         Assert.Contains(recipe.Instructions, i => i.Ingredient != null);
+
+        Assert.NotEmpty(recipe.ImageUrl);
+        Assert.NotEqual("https://example.com/image.jpg", recipe.ImageUrl);
     }
 }

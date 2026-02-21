@@ -43,6 +43,12 @@ public sealed class RecipeScraper(OpenAiSecrets secrets)
         var doc = new HtmlDocument();
         doc.LoadHtml(html);
 
+        // Find potential recipe images before removing nodes
+        var imageUrl = doc.DocumentNode.SelectSingleNode("//meta[@property='og:image']")
+                           ?.GetAttributeValue("content", "")
+                       ?? doc.DocumentNode.SelectSingleNode("//meta[@name='twitter:image']")
+                           ?.GetAttributeValue("content", "");
+
         // Remove scripts, styles, nav, footer to reduce tokens
         var nodesToRemove = doc.DocumentNode.SelectNodes("//script|//style|//nav|//footer|//header");
         if (nodesToRemove.Count == 0)
@@ -51,7 +57,13 @@ public sealed class RecipeScraper(OpenAiSecrets secrets)
         foreach (var node in nodesToRemove)
             node.Remove();
 
-        return doc.DocumentNode.InnerText;
+        var result = doc.DocumentNode.InnerText;
+        if (!string.IsNullOrEmpty(imageUrl))
+        {
+            result = $"Image URL: {imageUrl}\n" + result;
+        }
+
+        return result;
     }
 
     private async Task<bool> IsRecipePageAsync(string text)
@@ -72,7 +84,7 @@ public sealed class RecipeScraper(OpenAiSecrets secrets)
                      The JSON should match this structure:
                      {
                        "Name": "Recipe Name",
-                       "ImageUrl": "https://example.com/image.jpg",
+                       "ImageUrl": "the image url of the recipe",
                        "Servings": 4,
                        "CookTimeMinutes": 30,
                        "Ingredients": [
