@@ -1,7 +1,9 @@
-﻿using Tests.Infrastructure.DI;
+﻿using Tests.Infrastructure.Constants;
+using Tests.Infrastructure.DI;
 
 namespace BL.OpenAi.Scraper.Tests;
 
+[Trait(TraitType.Category, TraitCategory.Smart)]
 public class RecipeScraperTests
 {
     [Theory]
