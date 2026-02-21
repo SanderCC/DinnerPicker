@@ -8,7 +8,7 @@ using JwtConstants = BL.Identity.Constants.JwtConstants;
 namespace BL.Identity.Helpers;
 
 [Service]
-public sealed class JwtHelper
+internal sealed class JwtHelper
 {
     public static string CreateToken(AppUser user, string[] roles)
     {
