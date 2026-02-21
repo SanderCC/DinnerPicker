@@ -7,9 +7,9 @@ using OpenAI.Chat;
 namespace BL.OpenAi.Scraper;
 
 [Service]
-public sealed class RecipeScraper
+public sealed class RecipeScraper(OpenAiSecrets secrets)
 {
-    private readonly ChatClient _chatClient = new("gpt-4o-mini", Environment.GetEnvironmentVariable("openai_api_key"));
+    private readonly ChatClient _chatClient = new("gpt-4o-mini", secrets.ApiKey);
     private readonly HttpClient _httpClient = new();
 
     public async Task<Recipe?> ScrapeUrlAsync(string url)
